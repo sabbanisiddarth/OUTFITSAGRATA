@@ -62,7 +62,7 @@ export default function SignUpPage() {
       <div className="hidden lg:flex lg:w-[60%] relative">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent to-cream/20 z-10" />
         <img
-          src="/agrataoutfits/images/image6.png"
+          src="/images/image6.png"
           alt="Elegant fashion"
           className="w-full h-full object-cover"
         />

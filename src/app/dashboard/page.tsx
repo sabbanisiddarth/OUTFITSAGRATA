@@ -11,35 +11,35 @@ import { GlassButton } from "@/components/ui/glass-button";
 // Parallax floating images: 1, 2, 3, 5, 6, 7, 9, 13
 const exampleImages = [
   {
-    url: "/agrataoutfits/images/image1.png",
+    url: "/images/image1.png",
     title: "Custom Design 1",
   },
   {
-    url: "/agrataoutfits/images/image2.png",
+    url: "/images/image2.png",
     title: "Custom Design 2",
   },
   {
-    url: "/agrataoutfits/images/image3.png",
+    url: "/images/image3.png",
     title: "Custom Design 3",
   },
   {
-    url: "/agrataoutfits/images/image5.png",
+    url: "/images/image5.png",
     title: "Custom Design 5",
   },
   {
-    url: "/agrataoutfits/images/image6.png",
+    url: "/images/image6.png",
     title: "Custom Design 6",
   },
   {
-    url: "/agrataoutfits/images/image7.png",
+    url: "/images/image7.png",
     title: "Custom Design 7",
   },
   {
-    url: "/agrataoutfits/images/image9.png",
+    url: "/images/image9.png",
     title: "Custom Design 9",
   },
   {
-    url: "/agrataoutfits/images/image13.png",
+    url: "/images/image13.png",
     title: "Custom Design 13",
   },
 ];
@@ -225,7 +225,7 @@ export default function DashboardPage() {
           >
             <div className="sketch-board sketch-board-alt relative group">
               <img
-                src="/agrataoutfits/images/sketch-graduation.jpg"
+                src="/images/sketch-graduation.jpg"
                 alt="Graduation Outfit — Custom Design Sketch"
               />
               <p className="sketch-board-label">Graduation Outfit</p>

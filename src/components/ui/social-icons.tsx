@@ -28,7 +28,7 @@ export function SocialIcons() {
           }`}
         >
           <img
-            src="/agrataoutfits/images/image10.jpg"
+            src="/images/image10.jpg"
             alt="Instagram"
             className="w-[18px] h-[18px] object-contain"
           />
@@ -47,7 +47,7 @@ export function SocialIcons() {
 export function InstagramIconImage() {
   return (
     <img
-      src="/agrataoutfits/images/image10.jpg"
+      src="/images/image10.jpg"
       alt="Instagram"
       className="w-5 h-5 object-contain"
     />

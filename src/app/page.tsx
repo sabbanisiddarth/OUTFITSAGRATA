@@ -14,19 +14,19 @@ const testimonials = [
     quote: "Crafted for a statement reception look. This bespoke black suit blends timeless elegance with a bold artistic touch, featuring intricate bird motifs that symbolize freedom and grace. Designed with precision and styled for confidence, every detail speaks of sophistication and individuality. Our client absolutely loved the look and walked away with countless compliments — the perfect reflection of style meeting personality. Custom creations that turn moments into memories.",
     name: "The Bespoke Black Suit",
     designation: "Custom Reception Collection",
-    src: "/agrataoutfits/images/image8.png",
+    src: "/images/image8.png",
   },
   {
     quote: "A Little Magic for Her Special Day. A client wanted a dreamy unicorn-themed frock for her baby girl's special celebration — something magical, soft, and picture-perfect. At Agrata Outfits, we turned that vision into reality by designing a frock inspired by fantasy colors, delicate layers, and playful elegance. We used pastel shades, soft tulle layers, and floral detailing to create a fairy-like look. Perfect for birthdays & photoshoots.",
     name: "The Unicorn Dream Frock",
     designation: "Baby Celebration Collection",
-    src: "/agrataoutfits/images/image12.png",
+    src: "/images/image12.png",
   },
   {
     quote: "Coordinated in Style, Celebrating Together. For a baby's first birthday, a client wanted something special — a perfectly coordinated outfit matching the event theme and color palette. At Agrata Outfits, we took that vision further by designing a complete family combo for 4, ensuring everyone looked connected and stylish for the celebration. From the baby's adorable outfit to matching family styling, every detail was thoughtfully designed.",
     name: "The First Birthday Family Combo",
     designation: "Family Celebration Collection",
-    src: "/agrataoutfits/images/image4.png",
+    src: "/images/image4.png",
   },
 ];
 
@@ -112,7 +112,7 @@ export default function HomePage() {
               <div className="relative">
                 <div className="w-80 md:w-[400px] rounded-3xl overflow-hidden shadow-2xl">
                   <img
-                    src="/agrataoutfits/images/founder.jpg"
+                    src="/images/founder.jpg"
                     alt="Pranitha - Founder of Agrata Outfits"
                     className="w-full h-auto object-cover"
                   />
@@ -251,7 +251,7 @@ export default function HomePage() {
           >
             <div className="sketch-board">
               <img
-                src="/agrataoutfits/images/sketch-lehenga.jpg"
+                src="/images/sketch-lehenga.jpg"
                 alt="Saffron Engagement Lehenga — Custom Design Sketch"
               />
               <p className="sketch-board-label">Saffron Engagement Lehenga</p>
