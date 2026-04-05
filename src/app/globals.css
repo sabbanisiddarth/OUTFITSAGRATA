@@ -1,0 +1,392 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   1. Explicitly load the custom font for all browsers
+   ========================================== */
+@font-face {
+  font-family: 'Aesthetic';
+  src: url('/agrataoutfits/fonts/Aesthetic-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================
+   Design System CSS Variables
+   ========================================== */
+:root {
+  --bg-cream: #E8DFD5;
+  --text-coffee: #3D2B1F;
+  --rose-dust: #A67C74;
+  --muted-umber: #705A4C;
+  --emerald-accent: #2D4F4F;
+  --surface-low: #F0EAE2;
+}
+
+/* ==========================================
+   Base Styles
+   ========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 2. Set a clean, legible default for ALL body text */
+body, p, span, a, input, li, label {
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-coffee);
+}
+
+body {
+  background-color: var(--bg-cream);
+  background-image: url("/agrataoutfits/images/texture.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-blend-mode: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 3. Apply the custom font ONLY to headings */
+h1, h2, h3, h4, h5, h6, .brand-title {
+  font-family: 'Aesthetic', serif;
+  font-weight: normal;
+}
+
+/* ==========================================
+   SVG Noise Filter (inlined for texture)
+   ========================================== */
+
+/* Textured Cream Background */
+.textured-bg {
+  position: relative;
+  background-color: var(--bg-cream);
+  background-image: url("/agrataoutfits/images/texture.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-blend-mode: normal;
+}
+
+.textured-bg > * {
+  position: relative;
+  z-index: 100;
+}
+
+/* Textured Rose Dust Background */
+.textured-bg-rose {
+  position: relative;
+  background-color: var(--rose-dust);
+  background-image: url("/agrataoutfits/images/texture.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-blend-mode: multiply;
+}
+
+.textured-bg-rose > * {
+  position: relative;
+  z-index: 100;
+}
+
+/* ==========================================
+   Utility Classes
+   ========================================== */
+.font-aesthetic {
+  font-family: 'Aesthetic', serif;
+}
+
+.bg-cream {
+  background-color: var(--bg-cream);
+}
+
+.bg-emerald {
+  background-color: var(--emerald-accent);
+}
+
+.text-coffee {
+  color: var(--text-coffee);
+}
+
+.text-rose-dust {
+  color: var(--rose-dust);
+}
+
+.text-muted-umber {
+  color: var(--muted-umber);
+}
+
+.border-rose-dust {
+  border-color: var(--rose-dust);
+}
+
+.bg-rose-dust {
+  background-color: var(--rose-dust);
+}
+
+/* ==========================================
+   Glass Button Styles (Original Liquid Glass)
+   ========================================== */
+.glass-button-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.glass-button {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    hsla(0, 0%, 100%, 0.25) 0%,
+    hsla(0, 0%, 100%, 0.06) 100%
+  );
+  border: 1px solid hsla(0, 0%, 100%, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    inset 0 0.5px 0 0 hsla(0, 0%, 100%, 0.45),
+    inset 0 -1px 2px 0 hsla(0, 0%, 100%, 0.12),
+    0 2px 6px -2px hsla(0, 0%, 0%, 0.2),
+    0 6px 12px -2px hsla(0, 0%, 0%, 0.08);
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-button:hover {
+  background: linear-gradient(
+    180deg,
+    hsla(0, 0%, 100%, 0.35) 0%,
+    hsla(0, 0%, 100%, 0.12) 100%
+  );
+  border-color: hsla(0, 0%, 100%, 0.4);
+  box-shadow:
+    inset 0 0.5px 0 0 hsla(0, 0%, 100%, 0.55),
+    inset 0 -1px 2px 0 hsla(0, 0%, 100%, 0.18),
+    0 4px 10px -2px hsla(0, 0%, 0%, 0.25),
+    0 10px 20px -4px hsla(0, 0%, 0%, 0.12);
+  transform: translateY(-1px);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 0 0.5px 0 0 hsla(0, 0%, 100%, 0.3),
+    inset 0 -1px 2px 0 hsla(0, 0%, 100%, 0.05),
+    0 1px 2px -1px hsla(0, 0%, 0%, 0.2);
+}
+
+.glass-button-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.glass-button-shadow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: transparent;
+  box-shadow: 0 10px 30px -5px hsla(0, 0%, 0%, 0.18);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.glass-button-wrap:hover .glass-button-shadow {
+  opacity: 1;
+}
+
+/* ==========================================
+   Custom Scrollbar
+   ========================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-low);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-umber);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rose-dust);
+}
+
+/* ==========================================
+   Section Styles
+   ========================================== */
+section {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ==========================================
+   Animations
+   ========================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+/* ==========================================
+   Responsive Container
+   ========================================== */
+.container-custom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Split Layout */
+.split-left {
+  width: 60%;
+}
+
+.split-right {
+  width: 40%;
+}
+
+/* ==========================================
+   Glass Card
+   ========================================== */
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   Floating Animation
+   ========================================== */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ==========================================
+   Shader Lines Canvas
+   ========================================== */
+.shader-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* ==========================================
+   Testimonial Card
+   ========================================== */
+.testimonial-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================
+   Founder Bio Card
+   ========================================== */
+.bio-card {
+  background: var(--surface-low);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(112, 90, 76, 0.1);
+}
+
+/* ==========================================
+   Sketch Board Styles
+   ========================================== */
+.sketch-board {
+  background: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15), 0 12px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  padding: 1rem;
+  transform: rotate(-1deg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 380px;
+  width: 100%;
+}
+
+.sketch-board:hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+.sketch-board img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 2px;
+}
+
+.sketch-board-label {
+  font-family: 'Aesthetic', serif;
+  color: var(--text-coffee);
+  text-align: center;
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+/* Second sketch board — rotated opposite */
+.sketch-board-alt {
+  transform: rotate(1deg);
+}
+
+.sketch-board-alt:hover {
+  transform: rotate(0deg) scale(1.02);
+}
