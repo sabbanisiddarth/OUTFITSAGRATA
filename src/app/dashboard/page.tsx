@@ -212,7 +212,7 @@ export default function DashboardPage() {
               contentClassName="flex items-center gap-2 text-white min-w-[200px] justify-center"
             >
               <InstagramIcon />
-              <span>Follow on Instagram</span>
+              <span className="text-white">Follow on Instagram</span>
             </GlassButton>
           </a>
 
