@@ -1,3 +1,4 @@
+/// <reference types="styled-jsx" />
 "use client";
 import React, {
   useEffect,
@@ -100,15 +101,6 @@ export const CircularTestimonials = ({
     };
   }, [autoplay, testimonialsLength]);
 
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") handlePrev();
-      if (e.key === "ArrowRight") handleNext();
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [activeIndex, testimonialsLength, handleNext, handlePrev]);
-
   const handleNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % testimonialsLength);
     if (autoplayIntervalRef.current) clearInterval(autoplayIntervalRef.current);
@@ -118,6 +110,15 @@ export const CircularTestimonials = ({
     setActiveIndex((prev) => (prev - 1 + testimonialsLength) % testimonialsLength);
     if (autoplayIntervalRef.current) clearInterval(autoplayIntervalRef.current);
   }, [testimonialsLength]);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") handlePrev();
+      if (e.key === "ArrowRight") handleNext();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [activeIndex, testimonialsLength, handleNext, handlePrev]);
 
   function getImageStyle(index: number): React.CSSProperties {
     const gap = calculateGap(containerWidth);

@@ -20,7 +20,7 @@
       "Bash(vercel pull:*)",
       "Bash(dir \"G:\\\\My Drive\\\\A-G-R-A-T-A\\\\components\\\\ui\\\\\")",
       "Bash(npm cache:*)",
-      "Bash(gh repo:*)"
+      "Bash(tar -xzf node_modules.tar.gz)"
     ]
   }
 }
