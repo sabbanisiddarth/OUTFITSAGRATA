@@ -34,11 +34,16 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Protect dashboard route
-  // Note: With basePath, Next.js strips the basePath from pathname in middleware,
-  // so we check against the path WITHOUT basePath prefix
   if (request.nextUrl.pathname.startsWith("/dashboard") && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/signin";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect authenticated users away from auth pages
+  if ((request.nextUrl.pathname === "/signin" || request.nextUrl.pathname === "/signup") && user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 

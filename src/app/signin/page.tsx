@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,14 +13,52 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showResend, setShowResend] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCountdown, setResendCountdown] = useState(0);
+  const [rememberMe, setRememberMe] = useState(true);
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCountdown > 0) {
+      timer = setInterval(() => {
+        setResendCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [resendCountdown]);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push("/dashboard");
+      }
+    };
+    checkUser();
+  }, [supabase, router]);
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMessage("");
+    setShowResend(false);
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -29,12 +67,37 @@ export default function SignInPage() {
 
     if (error) {
       setError(error.message);
+      if (error.message.toLowerCase().includes("not confirmed")) {
+        setShowResend(true);
+      }
       setLoading(false);
       return;
     }
 
     router.push("/dashboard");
     router.refresh();
+  };
+
+  const handleResendEmail = async () => {
+    if (resendCountdown > 0) return;
+    
+    setResendLoading(true);
+    setError("");
+    
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: email,
+    });
+
+    if (error) {
+      setError(error.message);
+      setResendLoading(false);
+      return;
+    }
+
+    setSuccessMessage("Verification email resent! Please check your inbox.");
+    setResendCountdown(60);
+    setResendLoading(false);
   };
 
   return (
@@ -69,10 +132,25 @@ export default function SignInPage() {
             </p>
           </div>
 
-          {/* Error Message */}
+          {/* Status Messages */}
           {error && (
             <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200">
               <p className="text-red-600 text-sm font-aesthetic">{error}</p>
+              {showResend && (
+                <button
+                  onClick={handleResendEmail}
+                  disabled={resendLoading || resendCountdown > 0}
+                  className="mt-2 text-rose-dust hover:underline text-xs font-semibold block"
+                >
+                  {resendLoading ? "Sending..." : resendCountdown > 0 ? `Resend in ${resendCountdown}s` : "Resend confirmation email"}
+                </button>
+              )}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mb-6 p-4 rounded-lg bg-green-50 border border-green-200">
+              <p className="text-green-600 text-sm font-aesthetic">{successMessage}</p>
             </div>
           )}
 
@@ -112,6 +190,8 @@ export default function SignInPage() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded border-input accent-rose-dust"
                 />
                 <span className="text-sm text-muted-umber font-aesthetic">

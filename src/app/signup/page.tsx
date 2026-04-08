@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,14 +15,37 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push("/dashboard");
+      }
+    };
+    checkUser();
+  }, [supabase, router]);
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMessage("");
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -36,7 +59,7 @@ export default function SignUpPage() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -48,6 +71,13 @@ export default function SignUpPage() {
 
     if (error) {
       setError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    // If confirmation is required, data.user will exist but session might be null
+    if (data.user && !data.session) {
+      setSuccessMessage("Account created! Please check your email to verify your account.");
       setLoading(false);
       return;
     }
@@ -88,10 +118,16 @@ export default function SignUpPage() {
             </p>
           </div>
 
-          {/* Error Message */}
+          {/* Status Messages */}
           {error && (
             <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200">
               <p className="text-red-600 text-sm font-aesthetic">{error}</p>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mb-6 p-4 rounded-lg bg-green-50 border border-green-200">
+              <p className="text-green-600 text-sm font-aesthetic">{successMessage}</p>
             </div>
           )}
 
