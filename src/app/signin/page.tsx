@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { GlassButton } from "@/components/ui/glass-button";
+import { checkAndUpdateDevice } from "@/lib/device-limit";
 
-export default function SignInPage() {
+function SignInContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +20,15 @@ export default function SignInPage() {
   const [resendCountdown, setResendCountdown] = useState(0);
   const [rememberMe, setRememberMe] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
+
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      setError(errorParam);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -60,7 +68,7 @@ export default function SignInPage() {
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -72,6 +80,18 @@ export default function SignInPage() {
       }
       setLoading(false);
       return;
+    }
+
+    if (authData.user) {
+      // Check device limit
+      const deviceCheck = await checkAndUpdateDevice(supabase, authData.user.id);
+      if (!deviceCheck.success) {
+        setError(deviceCheck.error || "Device limit reached.");
+        // Significant: Sign out the user if the device check fails to prevent session persistence
+        await supabase.auth.signOut();
+        setLoading(false);
+        return;
+      }
     }
 
     router.push("/dashboard");
@@ -259,5 +279,13 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen w-full flex items-center justify-center bg-cream"><p className="font-aesthetic text-coffee">Loading...</p></div>}>
+      <SignInContent />
+    </Suspense>
   );
 }

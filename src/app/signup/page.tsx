@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { GlassButton } from "@/components/ui/glass-button";
+import { checkAndUpdateDevice } from "@/lib/device-limit";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -75,15 +76,25 @@ export default function SignUpPage() {
       return;
     }
 
-    // If confirmation is required, data.user will exist but session might be null
+    if (data.user && data.session) {
+      // Check device limit if session is created immediately
+      const deviceCheck = await checkAndUpdateDevice(supabase, data.user.id);
+      if (!deviceCheck.success) {
+        setError(deviceCheck.error || "Device limit reached.");
+        await supabase.auth.signOut();
+        setLoading(false);
+        return;
+      }
+      router.push("/dashboard");
+      router.refresh();
+      return;
+    }
+
     if (data.user && !data.session) {
       setSuccessMessage("Account created! Please check your email to verify your account.");
       setLoading(false);
       return;
     }
-
-    router.push("/dashboard");
-    router.refresh();
   };
 
   return (

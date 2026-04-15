@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { checkAndUpdateDevice, getDeviceId, DEVICE_ID_COOKIE_NAME } from "@/lib/device-limit";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -31,19 +32,50 @@ export async function GET(request: Request) {
       }
     );
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data: { user }, error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
 
-    if (!error) {
+    if (!sessionError && user) {
+      let deviceId = getDeviceId(cookieStore);
+      let newDeviceGenerated = false;
+      
+      if (!deviceId) {
+        deviceId = crypto.randomUUID();
+        newDeviceGenerated = true;
+      }
+
+      const deviceCheck = await checkAndUpdateDevice(supabase, user.id, deviceId);
+      
       const forwardedHost = request.headers.get("x-forwarded-host");
       const isLocalEnv = process.env.NODE_ENV === "development";
+      let redirectUrl: string;
 
       if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}`);
+        redirectUrl = `${origin}${next}`;
       } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`);
+        redirectUrl = `https://${forwardedHost}${next}`;
       } else {
-        return NextResponse.redirect(`${origin}${next}`);
+        redirectUrl = `${origin}${next}`;
       }
+
+      if (!deviceCheck.success) {
+        // Sign out if limit reached
+        await supabase.auth.signOut();
+        const errorUrl = new URL(`${origin}/signin`);
+        errorUrl.searchParams.set("error", deviceCheck.error || "Device limit reached.");
+        return NextResponse.redirect(errorUrl);
+      }
+
+      const response = NextResponse.redirect(redirectUrl);
+      
+      if (newDeviceGenerated) {
+        response.cookies.set(DEVICE_ID_COOKIE_NAME, deviceId, {
+          path: "/",
+          maxAge: 60 * 60 * 24 * 365,
+          sameSite: "lax",
+        });
+      }
+      
+      return response;
     }
   }
 
